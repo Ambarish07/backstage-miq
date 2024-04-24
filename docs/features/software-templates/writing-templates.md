@@ -736,7 +736,7 @@ an entity reference, such as the `kind`, `namespace`, and `name`.
 
 ### pick
 
-This `pick` filter allows you to select specific properties from an object.
+This `pick` filter allows you to select specific properties (`kind`, `namespace`, `name`) from an object.
 
 **Usage Example**
 
