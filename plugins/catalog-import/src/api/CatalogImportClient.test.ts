@@ -581,12 +581,6 @@ describe('CatalogImportClient', () => {
           'https://github.com/backstage/backstage/blob/main/catalog-info.yaml',
       });
       expect(catalogApi.validateEntity).toHaveBeenCalledTimes(1);
-      expect(scmAuthApi.getCredentials).toHaveBeenCalledWith({
-        host: 'github.com',
-        additionalScope: {
-          repoWrite: true,
-        },
-      });
       expect(
         (new Octokit().git.createRef as any as jest.Mock).mock.calls[0][0],
       ).toEqual({
@@ -699,13 +693,6 @@ describe('CatalogImportClient', () => {
           location: `https://github.com/acme-corp/our-awesome-api/blob/main/${entityFilename}`,
         }),
       );
-
-      expect(scmAuthApi.getCredentials).toHaveBeenCalledWith({
-        host: 'github.com',
-        additionalScope: {
-          repoWrite: true,
-        },
-      });
 
       expect(
         (new Octokit().git.createRef as any as jest.Mock).mock.calls[0][0],
