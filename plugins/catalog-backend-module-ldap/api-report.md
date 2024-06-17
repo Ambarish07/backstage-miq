@@ -69,9 +69,6 @@ export type GroupConfig = {
 };
 
 // @public
-export type GroupConfigList = GroupConfig | GroupConfig[] | undefined;
-
-// @public
 export type GroupTransformer = (
   vendor: LdapVendor,
   config: GroupConfig,
@@ -200,9 +197,9 @@ export type LdapProviderConfig = {
   target: string;
   tls?: TLSConfig;
   bind?: BindConfig;
-  users: UserConfig;
-  groups: GroupConfig;
-  schedule?: SchedulerServiceTaskScheduleDefinition;
+  users: UserConfig[];
+  groups: GroupConfig[];
+  schedule?: TaskScheduleDefinition;
 };
 
 // @public
@@ -226,8 +223,8 @@ export function readLdapLegacyConfig(config: Config): LdapProviderConfig[];
 // @public
 export function readLdapOrg(
   client: LdapClient,
-  userConfig: UserConfigList,
-  groupConfig: GroupConfigList,
+  userConfig: UserConfig[],
+  groupConfig: GroupConfig[],
   options: {
     groupTransformer?: GroupTransformer;
     userTransformer?: UserTransformer;
@@ -265,9 +262,6 @@ export type UserConfig = {
     memberOf: string;
   };
 };
-
-// @public
-export type UserConfigList = UserConfig | UserConfig[] | undefined;
 
 // @public
 export type UserTransformer = (
