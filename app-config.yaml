@@ -231,6 +231,9 @@ integrations:
     - endpoint: ${AWS_S3_ENDPOINT}
       accessKeyId: ${AWS_ACCESS_KEY_ID}
       secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+  # Example to add slack configuration
+  # slack:
+  #   token: ${SLACK_BOT_TOKEN}
 
 catalog:
   import:
