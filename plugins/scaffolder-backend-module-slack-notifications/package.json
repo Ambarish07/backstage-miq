@@ -2,8 +2,15 @@
   "name": "backstage-plugin-scaffolder-backend-module-slack-notifications",
   "version": "0.0.0",
   "description": "The slack-notifications module for @backstage/plugin-scaffolder-backend",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage",
+    "directory": "plugins/scaffolder-backend-module-slack-notifications"
+  },
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
   "publishConfig": {
     "access": "public",
@@ -28,12 +35,12 @@
   },
   "dependencies": {
     "@backstage/config": "workspace:^",
-    "@backstage/plugin-scaffolder-node": "workspace:^"
+    "@backstage/plugin-scaffolder-node": "workspace:^",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@backstage/backend-common": "workspace:^",
     "@backstage/plugin-scaffolder-node-test-utils": "workspace:^",
-    "jest": "^29.7.0",
     "nock": "^13.5.4"
   }
 }

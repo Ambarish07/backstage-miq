@@ -16,6 +16,7 @@
 
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { Config } from '@backstage/config';
+import fetch from 'node-fetch';
 
 /**
  * Slack message
@@ -61,7 +62,7 @@ export function slackSendMessage(options: { config: Config }) {
       const slackMessageApi: string = 'https://slack.com/api/chat.postMessage';
       const token: string =
         config.getOptionalString('integrations.slack.token') || ''; // Get the slack token from the config file. Looks like: xoxb-xxxxxxxxxxxx-xxxxxxxxxx
-      const response = await fetch(slackMessageApi, {
+      const response: any = await fetch(slackMessageApi, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

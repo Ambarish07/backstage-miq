@@ -27,33 +27,50 @@ describe('slackSendMessage', () => {
       },
     },
   });
+  beforeEach(() => {
+    nock.cleanAll();
+  });
   const action = slackSendMessage({ config });
+  const token = config.getOptionalString('integrations.slack.token');
   const mockChannel = '<SLACK_MOCK_CHANNEL>';
+  const defaultContext = createMockActionContext({
+    output: jest.fn(),
+  });
+  defaultContext.logger.info = jest.fn();
+  defaultContext.logger.error = jest.fn();
   it('should send a Slack text message successfully', async () => {
     const mockMessage = { text: 'Hello, Slack!' };
-    const mockResponse = { ok: true };
+    const mockResponse = { ok: true, channel: mockChannel };
 
-    const context = createMockActionContext({
+    const context = {
+      ...defaultContext,
       input: {
         channel: mockChannel,
         message: mockMessage,
       },
-    });
+    };
 
-    nock('https://slack.com')
+    nock('https://slack.com', {
+      reqheaders: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .post('/api/chat.postMessage', {
         channel: mockChannel,
         blocks: [],
-        text: 'Hello, Slack!',
+        text: mockMessage.text,
       })
       .reply(200, mockResponse);
-
     await action.handler(context);
 
-    expect(context.output).toHaveBeenCalledWith('response', mockResponse);
+    expect(context.output).toHaveBeenCalledWith('response', {
+      ok: mockResponse.ok,
+    });
     expect(context.logger.info).toHaveBeenCalledWith(
       `Notified to ${mockChannel}`,
     );
+    console.log(nock.isDone());
   });
 
   it('should send a Slack block message successfully', async () => {
@@ -82,27 +99,30 @@ describe('slackSendMessage', () => {
       ],
     };
 
-    const mockResponse = { ok: true };
-    const context = createMockActionContext({
+    const mockResponse = { ok: true, channel: mockChannel };
+    const context = {
+      ...defaultContext,
       input: {
         channel: mockChannel,
         message: mockMessage,
       },
-    });
+    };
 
     nock('https://slack.com')
       .post('/api/chat.postMessage', {
         channel: mockChannel,
-        blocks: mockMessage,
+        blocks: mockMessage.blocks,
         text: '',
       })
       .reply(200, mockResponse);
 
     await action.handler(context);
 
-    expect(context.output).toHaveBeenCalledWith('response', mockResponse);
+    expect(context.output).toHaveBeenCalledWith('response', {
+      ok: mockResponse.ok,
+    });
     expect(context.logger.info).toHaveBeenCalledWith(
-      `Notified to ${mockChannel}`,
+      `Notified to ${mockResponse.channel}`,
     );
   });
 
@@ -111,15 +131,15 @@ describe('slackSendMessage', () => {
 
     nock('https://slack.com')
       .post('/api/chat.postMessage')
-      .reply(200, { ok: false });
+      .reply(200, { ok: false, error: 'channel_not_found' });
 
-    const context = createMockActionContext({
+    const context = {
+      ...defaultContext,
       input: {
-        channel: '', // Check if the test fails when the channel is not provided
+        channel: '',
         message: mockMessage,
       },
-    });
-
+    };
     await expect(action.handler(context)).rejects.toThrow(
       'Failed sending slack message: channel_not_found',
     );
