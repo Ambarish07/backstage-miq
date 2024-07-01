@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { TemplateExample } from '@backstage/plugin-scaffolder-node';
 import yaml from 'yaml';
-import { commonGitlabConfigExample } from '../commonGitlabConfig';
 
 export const examples: TemplateExample[] = [
   {
-    description: 'Trigger a GitLab Project Pipeline',
+    description: 'Enables GitHub Pages for a repository.',
     example: yaml.stringify({
       steps: [
         {
-          id: 'triggerPipeline',
-          name: 'Trigger Project Pipeline',
-          action: 'gitlab:pipeline:trigger',
+          action: 'github:pages',
+          id: 'github-pages',
+          name: 'Enable GitHub Pages',
           input: {
-            ...commonGitlabConfigExample,
-            projectId: 12,
-            tokenDescription:
-              'This is the text that will appear in the pipeline token',
-            token: 'glpt-xxxxxxxxxxxx',
-            branch: 'main',
-            variables: { var_one: 'one', var_two: 'two' },
+            repoUrl: 'github.com?repo=repo&owner=owner',
+            buildType: 'workflow',
+            sourceBranch: 'main',
+            sourcePath: '/',
+            token: 'gph_YourGitHubToken',
           },
         },
       ],
